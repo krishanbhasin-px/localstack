@@ -10,7 +10,7 @@ from localstack_snapshot.snapshots.transformer import (
     TransformContext,
 )
 
-from localstack.aws.api.stepfunctions import HistoryEventType
+from localstack.aws.api.stepfunctions import DescribeStateMachineOutput, HistoryEventType
 from localstack.services.stepfunctions.asl.utils.encoding import to_json_str
 from localstack.testing.aws.util import is_aws_cloud
 from localstack.utils.strings import short_uid
@@ -241,6 +241,19 @@ def create_iam_role_for_sfn(aws_client, cleanups, create_state_machine):
 
 
 @pytest.fixture
+def create_cloud_watch_group_for_sfn(aws_client) -> str:
+    name = f"sfn-test-log-group-{short_uid()}"
+    aws_client.logs.create_log_group(logGroupName=name)
+
+    describe_log_group_response = aws_client.logs.describe_log_groups(logGroupNamePrefix=name)
+    log_group_arn = describe_log_group_response["logGroups"][0]["arn"]
+
+    yield log_group_arn
+
+    aws_client.logs.delete_log_group(logGroupName=name)
+
+
+@pytest.fixture
 def create_state_machine(aws_client):
     _state_machine_arns: Final[list[str]] = list()
 
@@ -254,9 +267,16 @@ def create_state_machine(aws_client):
 
     for state_machine_arn in _state_machine_arns:
         try:
-            executions = aws_client.stepfunctions.list_executions(stateMachineArn=state_machine_arn)
-            for execution in executions["executions"]:
-                aws_client.stepfunctions.stop_execution(executionArn=execution["executionArn"])
+            # Stop executions for standard workflows first as executions for express workflows cannot be listed.
+            describe_output: DescribeStateMachineOutput = (
+                aws_client.stepfunctions.describe_state_machine(stateMachineArn=state_machine_arn)
+            )
+            if describe_output["type"] == "STANDARD":
+                executions = aws_client.stepfunctions.list_executions(
+                    stateMachineArn=state_machine_arn
+                )
+                for execution in executions["executions"]:
+                    aws_client.stepfunctions.stop_execution(executionArn=execution["executionArn"])
 
             aws_client.stepfunctions.delete_state_machine(stateMachineArn=state_machine_arn)
         except Exception:

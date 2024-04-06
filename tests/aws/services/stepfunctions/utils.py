@@ -1,11 +1,13 @@
 import json
 import logging
 import os
-from typing import Callable, Final
+import time
+from typing import Callable, Final, Optional
 
 from botocore.exceptions import ClientError
 from localstack_snapshot.snapshots.transformer import JsonpathTransformer, RegexTransformer
 
+from localstack.aws.api.sqs import Message, MessageList, ReceiveMessageResult
 from localstack.aws.api.stepfunctions import (
     CreateStateMachineOutput,
     ExecutionStatus,
@@ -197,6 +199,35 @@ def await_execution_terminated(stepfunctions_client, execution_arn: str):
     )
 
 
+def await_on_sqs_message(
+    sqs_client,
+    queue_url: str,
+    validation_function: Optional[Callable[[Message], bool]] = None,
+    timeout_seconds: int = 120,
+    interval_seconds: int = 1,
+) -> Optional[Message]:
+    result: Optional[Message] = None
+    while not result and timeout_seconds:
+        response: ReceiveMessageResult = sqs_client.receive_message(
+            QueueUrl=queue_url, WaitTimeSeconds=1, MaxNumberOfMessages=1
+        )
+
+        messages: MessageList = response.get("Messages", [])
+        if messages:
+            message: Message = messages[0]
+            if validation_function is None or validation_function(message):
+                result = message
+                break
+
+        time.sleep(interval_seconds)
+        timeout_seconds -= interval_seconds
+
+    if not result:
+        LOG.warning("Timed out whilst awaiting for sqs message to satisfy condition for execution.")
+
+    return result
+
+
 def await_execution_lists_terminated(
     stepfunctions_client, state_machine_arn: str, execution_arn: str
 ):
@@ -320,6 +351,109 @@ def create_and_record_execution(
         state_machine_arn,
         execution_input,
         verify_execution_description,
+    )
+
+
+def launch_and_record_sync_execution(
+    stepfunctions_client,
+    sfn_snapshot,
+    state_machine_arn,
+    execution_input,
+):
+    exec_resp = stepfunctions_client.start_sync_execution(
+        stateMachineArn=state_machine_arn,
+        input=execution_input,
+    )
+    sfn_snapshot.add_transformer(sfn_snapshot.transform.sfn_sm_sync_exec_arn(exec_resp, 0))
+    sfn_snapshot.match("start_execution_sync_response", exec_resp)
+
+
+def create_and_record_express_sync_execution(
+    stepfunctions_client,
+    create_iam_role_for_sfn,
+    create_state_machine,
+    sfn_snapshot,
+    definition,
+    execution_input,
+):
+    snf_role_arn = create_iam_role_for_sfn()
+    sfn_snapshot.add_transformer(RegexTransformer(snf_role_arn, "sfn_role_arn"))
+
+    creation_response = create_state_machine(
+        name=f"express_statemachine_{short_uid()}",
+        definition=definition,
+        roleArn=snf_role_arn,
+        type="EXPRESS",
+    )
+    state_machine_arn = creation_response["stateMachineArn"]
+    sfn_snapshot.add_transformer(sfn_snapshot.transform.sfn_sm_create_arn(creation_response, 0))
+    sfn_snapshot.match("creation_response", creation_response)
+
+    launch_and_record_sync_execution(
+        stepfunctions_client,
+        sfn_snapshot,
+        state_machine_arn,
+        execution_input,
+    )
+
+
+def launch_and_record_async_execution(
+    stepfunctions_client,
+    logs_client,
+    sfn_snapshot,
+    state_machine_arn,
+    execution_input,
+    cloud_watch_group_arn,
+):
+    exec_resp = stepfunctions_client.start_execution(
+        stateMachineArn=state_machine_arn,
+        input=execution_input,
+    )
+    sfn_snapshot.add_transformer(sfn_snapshot.transform.sfn_sm_exec_arn(exec_resp, 0))
+    sfn_snapshot.match("start_execution_sync_response", exec_resp)
+    # execution_arn = exec_resp["executionArn"]
+
+    # res = logs_client.filter_log_events(logGroupName=cloud_watch_group_arn)
+    # TODO: wait for cloudwatch api.
+
+
+def create_and_record_express_async_execution(
+    stepfunctions_client,
+    logs_client,
+    create_iam_role_for_sfn,
+    create_state_machine,
+    create_cloud_watch_group_for_sfn,
+    sfn_snapshot,
+    definition,
+    execution_input,
+):
+    snf_role_arn = create_iam_role_for_sfn()
+    sfn_snapshot.add_transformer(RegexTransformer(snf_role_arn, "sfn_role_arn"))
+
+    log_group_arn = create_cloud_watch_group_for_sfn
+
+    creation_response = create_state_machine(
+        name=f"express_statemachine_{short_uid()}",
+        definition=definition,
+        roleArn=snf_role_arn,
+        type="EXPRESS",
+        loggingConfiguration={
+            "level": "ALL",
+            "includeExecutionData": True,
+            "destinations": [{"cloudWatchLogsLogGroup": {"logGroupArn": log_group_arn}}],
+        },
+    )
+    state_machine_arn = creation_response["stateMachineArn"]
+    sfn_snapshot.add_transformer(sfn_snapshot.transform.sfn_sm_create_arn(creation_response, 0))
+    sfn_snapshot.match("creation_response", creation_response)
+
+    launch_and_record_async_execution(
+        stepfunctions_client,
+        logs_client,
+        sfn_snapshot,
+        state_machine_arn,
+        execution_input,
+        log_group_arn,
     )
 
 

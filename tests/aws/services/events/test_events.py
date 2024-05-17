@@ -555,13 +555,15 @@ class TestEventBus:
             snapshot.match(f"list-event-buses-after-delete-{region}", response)
 
     @markers.aws.validated
-    def test_create_multiple_event_buses_same_name(self, create_event_bus, aws_client, snapshot):
+    def test_create_multiple_event_buses_same_name(
+        self, events_create_event_bus, aws_client, snapshot
+    ):
         bus_name = f"test-bus-{short_uid()}"
         snapshot.add_transformer(snapshot.transform.regex(bus_name, "<bus-name>"))
-        create_event_bus(Name=bus_name)
+        events_create_event_bus(Name=bus_name)
 
         with pytest.raises(aws_client.events.exceptions.ResourceAlreadyExistsException) as e:
-            create_event_bus(Name=bus_name)
+            events_create_event_bus(Name=bus_name)
         snapshot.match("create-multiple-event-buses-same-name", e)
 
     @markers.aws.validated
@@ -583,7 +585,7 @@ class TestEventBus:
         snapshot.match("delete-default-event-bus-error", e)
 
     @markers.aws.validated
-    def test_list_event_buses_with_prefix(self, create_event_bus, aws_client, snapshot):
+    def test_list_event_buses_with_prefix(self, events_create_event_bus, aws_client, snapshot):
         events = aws_client.events
         bus_name = f"unique-prefix-1234567890-{short_uid()}"
         snapshot.add_transformer(snapshot.transform.regex(bus_name, "<bus-name>"))
@@ -591,8 +593,8 @@ class TestEventBus:
         bus_name_not_match = "no-prefix-match"
         snapshot.add_transformer(snapshot.transform.regex(bus_name_not_match, "<bus-name>"))
 
-        create_event_bus(Name=bus_name)
-        create_event_bus(Name=bus_name_not_match)
+        events_create_event_bus(Name=bus_name)
+        events_create_event_bus(Name=bus_name_not_match)
 
         response = events.list_event_buses(NamePrefix=bus_name)
         snapshot.match("list-event-buses-prefix-complete-name", response)
@@ -605,7 +607,7 @@ class TestEventBus:
         not is_v2_provider() and not is_aws_cloud(),
         reason="V1 provider does not support this feature",
     )
-    def test_list_event_buses_with_limit(self, create_event_bus, aws_client, snapshot):
+    def test_list_event_buses_with_limit(self, events_create_event_bus, aws_client, snapshot):
         snapshot.add_transformer(snapshot.transform.jsonpath("$..NextToken", "next_token"))
         events = aws_client.events
         bus_name_prefix = f"test-bus-{short_uid()}"
@@ -614,7 +616,7 @@ class TestEventBus:
 
         for i in range(count):
             bus_name = f"{bus_name_prefix}-{i}"
-            create_event_bus(Name=bus_name)
+            events_create_event_bus(Name=bus_name)
 
         response = events.list_event_buses(Limit=int(count / 2), NamePrefix=bus_name_prefix)
         snapshot.match("list-event-buses-limit", response)
@@ -907,12 +909,12 @@ class TestEventRule:
     @markers.aws.validated
     @pytest.mark.parametrize("bus_name", ["custom", "default"])
     def test_put_list_with_prefix_describe_delete_rule(
-        self, bus_name, create_event_bus, put_rule, aws_client, snapshot
+        self, bus_name, events_create_event_bus, put_rule, aws_client, snapshot
     ):
         if bus_name == "custom":
             bus_name = f"bus-{short_uid()}"
             snapshot.add_transformer(snapshot.transform.regex(bus_name, "<bus-name>"))
-            create_event_bus(Name=bus_name)
+            events_create_event_bus(Name=bus_name)
 
         rule_name = f"test-rule-{short_uid()}"
         snapshot.add_transformer(snapshot.transform.regex(rule_name, "<rule-name>"))
@@ -938,10 +940,10 @@ class TestEventRule:
 
     @markers.aws.validated
     def test_put_multiple_rules_with_same_name(
-        self, create_event_bus, put_rule, aws_client, snapshot
+        self, events_create_event_bus, put_rule, aws_client, snapshot
     ):
         event_bus_name = f"bus-{short_uid()}"
-        create_event_bus(Name=event_bus_name)
+        events_create_event_bus(Name=event_bus_name)
         snapshot.add_transformer(snapshot.transform.regex(event_bus_name, "<bus-name>"))
 
         rule_name = f"test-rule-{short_uid()}"
@@ -966,11 +968,11 @@ class TestEventRule:
         snapshot.match("list-rules", response)
 
     @markers.aws.validated
-    def test_list_rule_with_limit(self, create_event_bus, put_rule, aws_client, snapshot):
+    def test_list_rule_with_limit(self, events_create_event_bus, put_rule, aws_client, snapshot):
         snapshot.add_transformer(snapshot.transform.jsonpath("$..NextToken", "next_token"))
 
         event_bus_name = f"bus-{short_uid()}"
-        create_event_bus(Name=event_bus_name)
+        events_create_event_bus(Name=event_bus_name)
         snapshot.add_transformer(snapshot.transform.regex(event_bus_name, "<bus-name>"))
 
         rule_name_prefix = f"test-rule-{short_uid()}"
@@ -1009,12 +1011,12 @@ class TestEventRule:
     @markers.aws.validated
     @pytest.mark.parametrize("bus_name", ["custom", "default"])
     def test_disable_re_enable_rule(
-        self, create_event_bus, put_rule, aws_client, snapshot, bus_name
+        self, events_create_event_bus, put_rule, aws_client, snapshot, bus_name
     ):
         if bus_name == "custom":
             bus_name = f"bus-{short_uid()}"
             snapshot.add_transformer(snapshot.transform.regex(bus_name, "<bus-name>"))
-            create_event_bus(Name=bus_name)
+            events_create_event_bus(Name=bus_name)
 
         rule_name = f"test-rule-{short_uid()}"
         snapshot.add_transformer(snapshot.transform.regex(rule_name, "<rule-name>"))
@@ -1197,7 +1199,7 @@ class TestEventTarget:
     def test_put_list_remove_target(
         self,
         bus_name,
-        create_event_bus,
+        events_create_event_bus,
         put_rule,
         sqs_create_queue,
         sqs_get_queue_arn,
@@ -1208,7 +1210,7 @@ class TestEventTarget:
         if bus_name == "custom":
             bus_name = f"bus-{short_uid()}"
             snapshot.add_transformer(snapshot.transform.regex(bus_name, "<bus-name>"))
-            create_event_bus(Name=bus_name)
+            events_create_event_bus(Name=bus_name)
             kwargs["EventBusName"] = bus_name  # required for custom event bus, optional for default
 
         rule_name = f"test-rule-{short_uid()}"

@@ -23,6 +23,7 @@ from localstack.aws.api.events import (
     TagList,
     Target,
     TargetId,
+    Timestamp,
 )
 from localstack.services.stores import (
     AccountRegionBundle,
@@ -80,6 +81,8 @@ class Archive:
     retention_days: RetentionDays = None
     state: ArchiveState = ArchiveState.DISABLED
     arn: Arn = field(init=False)
+    event_count: int = 0
+    creation_time: Timestamp = None
 
     def __post_init__(self):
         self.arn = f"arn:aws:events:{self.region}:{self.account_id}:archive/{self.name}"

@@ -16,6 +16,8 @@ RULE_ARN_CUSTOM_EVENT_BUS_PATTERN = re.compile(
     r"^arn:aws:events:[a-z0-9-]+:\d{12}:rule/[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+$"
 )
 
+RULE_ARN_ARCHIVE_PATTERN = re.compile(r"^arn:aws:events:[a-z0-9-]+:\d{12}:archive/[a-zA-Z0-9_-]+$")
+
 
 def get_resource_type(arn: Arn) -> ResourceType:
     parsed_arn = parse_arn(arn)
@@ -45,3 +47,7 @@ def extract_event_bus_name(
         if bool(RULE_ARN_CUSTOM_EVENT_BUS_PATTERN.match(resource_arn_or_name)):
             return resource_arn_or_name.split("rule/", 1)[1].split("/", 1)[0]
         return "default"
+
+
+def is_archive_arn(arn: Arn) -> bool:
+    return bool(RULE_ARN_ARCHIVE_PATTERN.match(arn))

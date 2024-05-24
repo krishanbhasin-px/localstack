@@ -153,6 +153,7 @@ def events_allow_event_rule_to_sqs_queue(aws_client):
     return _allow_event_rule
 
 
+@pytest.fixture
 def clean_up(aws_client):
     def _clean_up(
         bus_name=None,

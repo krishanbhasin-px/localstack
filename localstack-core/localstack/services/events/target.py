@@ -235,28 +235,18 @@ class ContainerTargetSender(TargetSender):
 
 class EventsTargetSender(TargetSender):
     def send_event(self, event):
-        eventbus_name = self.target["Arn"].split(":")[-1].split("/")[-1]
-        source = (
-            event.get("source")
-            if event.get("source") is not None
-            else self.service
-            if self.service
-            else ""
-        )
-        detail_type = event.get("detail-type") if event.get("detail-type") is not None else ""
+        event_bus_name = self.target["Arn"].split(":")[-1].split("/")[-1]
+        source = self._get_source(event)
+        detail_type = self._get_detail_type(event)
         # TODO add validation and tests for eventbridge to eventbridge requires Detail, DetailType, and Source
         # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/events/client/put_events.html
         detail = event.get("detail", event)
-        resources = (
-            event.get("resources")
-            if event.get("resources") is not None
-            else ([self.rule_arn] if self.rule_arn else [])
-        )
+        resources = self._get_resources(event)
 
         self.client.put_events(
             Entries=[
                 {
-                    "EventBusName": eventbus_name,
+                    "EventBusName": event_bus_name,
                     "Source": source,
                     "DetailType": detail_type,
                     "Detail": json.dumps(detail),
@@ -264,6 +254,24 @@ class EventsTargetSender(TargetSender):
                 }
             ]
         )
+
+    def _get_source(self, event: FormattedEvent | TransformedEvent) -> str:
+        if isinstance(event, dict) and (source := event.get("source")):
+            return source
+        else:
+            return self.service if self.service else ""
+
+    def _get_detail_type(self, event: FormattedEvent | TransformedEvent) -> str:
+        if isinstance(event, dict) and (detail_type := event.get("detail-type")):
+            return detail_type
+        else:
+            return ""
+
+    def _get_resources(self, event: FormattedEvent | TransformedEvent) -> list[str]:
+        if isinstance(event, dict) and (resources := event.get("resources")):
+            return resources
+        else:
+            return [self.rule_arn] if self.rule_arn else []
 
 
 class FirehoseTargetSender(TargetSender):

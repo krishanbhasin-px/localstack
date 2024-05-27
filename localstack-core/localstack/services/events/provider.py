@@ -84,7 +84,7 @@ from localstack.services.events.rule import RuleService, RuleServiceDict
 from localstack.services.events.scheduler import JobScheduler
 from localstack.services.events.target import TargetSender, TargetSenderDict, TargetSenderFactory
 from localstack.services.plugins import ServiceLifecycleHook
-from localstack.utils.aws.arns import parse_arn
+from localstack.utils.aws.arns import ARN_PARTITION_REGEX, parse_arn
 from localstack.utils.common import truncate
 from localstack.utils.strings import long_uid
 from localstack.utils.time import TIMESTAMP_FORMAT_TZ, timestamp
@@ -92,7 +92,7 @@ from localstack.utils.time import TIMESTAMP_FORMAT_TZ, timestamp
 LOG = logging.getLogger(__name__)
 
 RULE_ARN_CUSTOM_EVENT_BUS_PATTERN = re.compile(
-    r"^arn:aws:events:[a-z0-9-]+:\d{12}:rule/[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+$"
+    rf"{ARN_PARTITION_REGEX}:events:[a-z0-9-]+:\d{{12}}:rule/[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+$"
 )
 
 
@@ -696,7 +696,7 @@ class EventsProvider(EventsApi, ServiceLifecycleHook):
         """Return the event bus name. Input can be either an event bus name or ARN."""
         if not resource_arn_or_name:
             return "default"
-        if "arn:aws:events" not in resource_arn_or_name:
+        if not re.match(f"{ARN_PARTITION_REGEX}:events", resource_arn_or_name):
             return resource_arn_or_name
         resource_type = get_resource_type(resource_arn_or_name)
         # TODO how to deal with / in event bus name or rule name

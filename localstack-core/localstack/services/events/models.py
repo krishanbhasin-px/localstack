@@ -26,6 +26,7 @@ from localstack.services.stores import (
     CrossRegionAttribute,
     LocalAttribute,
 )
+from localstack.utils.aws.arns import get_partition
 from localstack.utils.tagging import TaggingService
 
 TargetDict = dict[TargetId, Target]
@@ -50,9 +51,9 @@ class Rule:
 
     def __post_init__(self):
         if self.event_bus_name == "default":
-            self.arn = f"arn:aws:events:{self.region}:{self.account_id}:rule/{self.name}"
+            self.arn = f"arn:{get_partition(self.region)}:events:{self.region}:{self.account_id}:rule/{self.name}"
         else:
-            self.arn = f"arn:aws:events:{self.region}:{self.account_id}:rule/{self.event_bus_name}/{self.name}"
+            self.arn = f"arn:{get_partition(self.region)}:events:{self.region}:{self.account_id}:rule/{self.event_bus_name}/{self.name}"
         self.created_by = self.account_id
         if self.tags is None:
             self.tags = []
@@ -77,7 +78,7 @@ class EventBus:
     arn: Arn = field(init=False)
 
     def __post_init__(self):
-        self.arn = f"arn:aws:events:{self.region}:{self.account_id}:event-bus/{self.name}"
+        self.arn = f"arn:{get_partition(self.region)}:events:{self.region}:{self.account_id}:event-bus/{self.name}"
         if self.rules is None:
             self.rules = {}
         if self.tags is None:

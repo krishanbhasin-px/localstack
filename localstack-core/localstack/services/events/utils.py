@@ -116,3 +116,22 @@ def format_event(event: PutEventsRequestEntry, region: str, account_id: str) -> 
         formatted_event["replay-name"] = replay_name  # required for replay from archive
 
     return formatted_event
+
+
+def re_format_event(event: FormattedEvent, event_bus_name: EventBusName) -> PutEventsRequestEntry:
+    """Transforms the event to the original event structure."""
+    re_formatted_event = {
+        "Source": event["source"],
+        "DetailType": event[
+            "detail-type"
+        ],  # detail_type automatically interpreted as detail-type in typedict
+        "Detail": json.dumps(event["detail"]),
+        # "Time": event["time"],
+    }
+    if event.get("resources"):
+        re_formatted_event["Resources"] = event["resources"]
+    if event_bus_name:
+        re_formatted_event["EventBusName"] = event_bus_name
+    if event.get("replay-name"):
+        re_formatted_event["ReplayName"] = event["replay_name"]
+    return re_formatted_event

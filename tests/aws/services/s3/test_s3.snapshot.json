@@ -4194,7 +4194,7 @@
     "recorded-content": {
       "create-kms-key": {
         "AWSAccountId": "111111111111",
-        "Arn": "arn:aws:kms:<region_2>:111111111111:key/<uuid:1>",
+        "Arn": "arn:<partition>:kms:<region_2>:111111111111:key/<uuid:1>",
         "CreationDate": "datetime",
         "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
         "Description": "<description:1>",
@@ -4223,7 +4223,7 @@
       "put-obj-wrong-kms-key-real-uuid": {
         "Error": {
           "Code": "KMS.NotFoundException",
-          "Message": "Key 'arn:aws:kms:<region_1>:111111111111:key/134f2428-cec1-4b25-a1ae-9048164dba47' does not exist"
+          "Message": "Key 'arn:<partition>:kms:<region_1>:111111111111:key/134f2428-cec1-4b25-a1ae-9048164dba47' does not exist"
         },
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -4233,7 +4233,7 @@
       "put-obj-wrong-kms-key-real-uuid-arn": {
         "Error": {
           "Code": "KMS.NotFoundException",
-          "Message": "Key 'arn:aws:kms:<region_1>:111111111111:key/134f2428-cec1-4b25-a1ae-9048164dba47' does not exist"
+          "Message": "Key 'arn:<partition>:kms:<region_1>:111111111111:key/134f2428-cec1-4b25-a1ae-9048164dba47' does not exist"
         },
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -4253,7 +4253,7 @@
       "put-obj-different-region-kms-key-no-arn": {
         "Error": {
           "Code": "KMS.NotFoundException",
-          "Message": "Key 'arn:aws:kms:<region_1>:111111111111:key/<uuid:1>' does not exist"
+          "Message": "Key 'arn:<partition>:kms:<region_1>:111111111111:key/<uuid:1>' does not exist"
         },
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -4972,7 +4972,7 @@
     "recorded-content": {
       "create-kms-key": {
         "AWSAccountId": "111111111111",
-        "Arn": "arn:aws:kms:<region>:111111111111:key/<uuid:1>",
+        "Arn": "arn:<partition>:kms:<region>:111111111111:key/<uuid:1>",
         "CreationDate": "datetime",
         "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
         "Description": "<description:1>",
@@ -4990,7 +4990,7 @@
       },
       "success-put-object-sse": {
         "ETag": "\"b81a68cd58c9371a4b5ddce85a8c50d1\"",
-        "SSEKMSKeyId": "arn:aws:kms:<region>:111111111111:key/<uuid:1>",
+        "SSEKMSKeyId": "arn:<partition>:kms:<region>:111111111111:key/<uuid:1>",
         "ServerSideEncryption": "aws:kms",
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -5005,7 +5005,7 @@
         "ETag": "\"b81a68cd58c9371a4b5ddce85a8c50d1\"",
         "LastModified": "datetime",
         "Metadata": {},
-        "SSEKMSKeyId": "arn:aws:kms:<region>:111111111111:key/<uuid:1>",
+        "SSEKMSKeyId": "arn:<partition>:kms:<region>:111111111111:key/<uuid:1>",
         "ServerSideEncryption": "aws:kms",
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -5015,7 +5015,7 @@
       "get-obj-disabled-key": {
         "Error": {
           "Code": "KMS.DisabledException",
-          "Message": "arn:aws:kms:<region>:111111111111:key/<uuid:1> is disabled."
+          "Message": "arn:<partition>:kms:<region>:111111111111:key/<uuid:1> is disabled."
         },
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -5025,7 +5025,7 @@
       "put-obj-disabled-key": {
         "Error": {
           "Code": "KMS.DisabledException",
-          "Message": "arn:aws:kms:<region>:111111111111:key/<uuid:1> is disabled."
+          "Message": "arn:<partition>:kms:<region>:111111111111:key/<uuid:1> is disabled."
         },
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -5035,7 +5035,7 @@
       "get-obj-pending-deletion-key": {
         "Error": {
           "Code": "KMS.KMSInvalidStateException",
-          "Message": "arn:aws:kms:<region>:111111111111:key/<uuid:1> is pending deletion."
+          "Message": "arn:<partition>:kms:<region>:111111111111:key/<uuid:1> is pending deletion."
         },
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -5473,7 +5473,7 @@
         "Bucket": "<bucket>",
         "BucketKeyEnabled": true,
         "Key": "test-sse-field-multipart",
-        "SSEKMSKeyId": "arn:aws:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
+        "SSEKMSKeyId": "arn:<partition>:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
         "ServerSideEncryption": "aws:kms",
         "UploadId": "<upload-id:1>",
         "ResponseMetadata": {
@@ -5484,7 +5484,7 @@
       "multi-sse-upload-part": {
         "BucketKeyEnabled": true,
         "ETag": "\"65784ca4497d11e297a2fb55807714b2\"",
-        "SSEKMSKeyId": "arn:aws:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
+        "SSEKMSKeyId": "arn:<partition>:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
         "ServerSideEncryption": "aws:kms",
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -5497,7 +5497,7 @@
         "ETag": "\"4582461eadfccba25baeccf1dff3685f-1\"",
         "Key": "test-sse-field-multipart",
         "Location": "<location:1>",
-        "SSEKMSKeyId": "arn:aws:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
+        "SSEKMSKeyId": "arn:<partition>:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
         "ServerSideEncryption": "aws:kms",
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -5513,7 +5513,7 @@
         "ETag": "\"4582461eadfccba25baeccf1dff3685f-1\"",
         "LastModified": "datetime",
         "Metadata": {},
-        "SSEKMSKeyId": "arn:aws:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
+        "SSEKMSKeyId": "arn:<partition>:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
         "ServerSideEncryption": "aws:kms",
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -5587,7 +5587,7 @@
       "put-obj-after-setting": {
         "BucketKeyEnabled": true,
         "ETag": "\"0974150952f40577037f6474c338ceea\"",
-        "SSEKMSKeyId": "arn:aws:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
+        "SSEKMSKeyId": "arn:<partition>:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
         "ServerSideEncryption": "aws:kms",
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -5603,7 +5603,7 @@
         "ETag": "\"0974150952f40577037f6474c338ceea\"",
         "LastModified": "datetime",
         "Metadata": {},
-        "SSEKMSKeyId": "arn:aws:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
+        "SSEKMSKeyId": "arn:<partition>:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
         "ServerSideEncryption": "aws:kms",
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -5617,7 +5617,7 @@
     "recorded-content": {
       "put-obj-default-kms-s3-key": {
         "ETag": "\"dbcc38f7b88c4c92ee5f9484d181ff51\"",
-        "SSEKMSKeyId": "arn:aws:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
+        "SSEKMSKeyId": "arn:<partition>:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
         "ServerSideEncryption": "aws:kms",
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -5632,7 +5632,7 @@
         "ETag": "\"dbcc38f7b88c4c92ee5f9484d181ff51\"",
         "LastModified": "datetime",
         "Metadata": {},
-        "SSEKMSKeyId": "arn:aws:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
+        "SSEKMSKeyId": "arn:<partition>:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
         "ServerSideEncryption": "aws:kms",
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -5641,7 +5641,7 @@
       },
       "put-obj-default-kms-s3-key-bucket-2": {
         "ETag": "\"9c8f3cc18cd06e60966725b1c5996554\"",
-        "SSEKMSKeyId": "arn:aws:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
+        "SSEKMSKeyId": "arn:<partition>:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
         "ServerSideEncryption": "aws:kms",
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -5656,7 +5656,7 @@
         "ETag": "\"9c8f3cc18cd06e60966725b1c5996554\"",
         "LastModified": "datetime",
         "Metadata": {},
-        "SSEKMSKeyId": "arn:aws:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
+        "SSEKMSKeyId": "arn:<partition>:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
         "ServerSideEncryption": "aws:kms",
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -5688,7 +5688,7 @@
       "put-obj-default-kms-s3-key-from-bucket": {
         "BucketKeyEnabled": true,
         "ETag": "\"671ef6aeba0f69c2391cf0a1b094d0aa\"",
-        "SSEKMSKeyId": "arn:aws:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
+        "SSEKMSKeyId": "arn:<partition>:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
         "ServerSideEncryption": "aws:kms",
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -5704,7 +5704,7 @@
         "ETag": "\"671ef6aeba0f69c2391cf0a1b094d0aa\"",
         "LastModified": "datetime",
         "Metadata": {},
-        "SSEKMSKeyId": "arn:aws:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
+        "SSEKMSKeyId": "arn:<partition>:kms:<region>:111111111111:key/<SSEKMSKeyId:1>",
         "ServerSideEncryption": "aws:kms",
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -8375,7 +8375,7 @@
           {
             "Destination": {
               "S3BucketDestination": {
-                "Bucket": "arn:aws:s3:::<resource:1>",
+                "Bucket": "arn:<partition>:s3:::<resource:1>",
                 "Format": "CSV"
               }
             },
@@ -8401,7 +8401,7 @@
         "InventoryConfiguration": {
           "Destination": {
             "S3BucketDestination": {
-              "Bucket": "arn:aws:s3:::<resource:1>",
+              "Bucket": "arn:<partition>:s3:::<resource:1>",
               "Format": "CSV"
             }
           },
@@ -8519,7 +8519,7 @@
           {
             "Destination": {
               "S3BucketDestination": {
-                "Bucket": "arn:aws:s3:::<resource:1>",
+                "Bucket": "arn:<partition>:s3:::<resource:1>",
                 "Format": "CSV"
               }
             },
@@ -8533,7 +8533,7 @@
           {
             "Destination": {
               "S3BucketDestination": {
-                "Bucket": "arn:aws:s3:::<resource:1>",
+                "Bucket": "arn:<partition>:s3:::<resource:1>",
                 "Format": "CSV"
               }
             },
@@ -8547,7 +8547,7 @@
           {
             "Destination": {
               "S3BucketDestination": {
-                "Bucket": "arn:aws:s3:::<resource:1>",
+                "Bucket": "arn:<partition>:s3:::<resource:1>",
                 "Format": "CSV"
               }
             },
@@ -8576,7 +8576,7 @@
           {
             "Destination": {
               "S3BucketDestination": {
-                "Bucket": "arn:aws:s3:::<resource:1>",
+                "Bucket": "arn:<partition>:s3:::<resource:1>",
                 "Format": "CSV"
               }
             },
@@ -8590,7 +8590,7 @@
           {
             "Destination": {
               "S3BucketDestination": {
-                "Bucket": "arn:aws:s3:::<resource:1>",
+                "Bucket": "arn:<partition>:s3:::<resource:1>",
                 "Format": "CSV"
               }
             },

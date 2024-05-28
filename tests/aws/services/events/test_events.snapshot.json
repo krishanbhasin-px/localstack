@@ -100,7 +100,7 @@
     "recorded-date": "29-04-2024, 13:15:44",
     "recorded-content": {
       "create-custom-event-bus-us-east-1": {
-        "EventBusArn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name>",
+        "EventBusArn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name>",
         "ResponseMetadata": {
           "HTTPHeaders": {},
           "HTTPStatusCode": 200
@@ -109,7 +109,7 @@
       "list-event-buses-after-create-us-east-1": {
         "EventBuses": [
           {
-            "Arn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name>",
+            "Arn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name>",
             "Name": "<bus-name>"
           }
         ],
@@ -119,7 +119,7 @@
         }
       },
       "describe-custom-event-bus-us-east-1": {
-        "Arn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name>",
+        "Arn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name>",
         "Name": "<bus-name>",
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -145,7 +145,7 @@
     "recorded-date": "29-04-2024, 13:15:47",
     "recorded-content": {
       "create-custom-event-bus-us-east-1": {
-        "EventBusArn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name>",
+        "EventBusArn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name>",
         "ResponseMetadata": {
           "HTTPHeaders": {},
           "HTTPStatusCode": 200
@@ -154,7 +154,7 @@
       "list-event-buses-after-create-us-east-1": {
         "EventBuses": [
           {
-            "Arn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name>",
+            "Arn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name>",
             "Name": "<bus-name>"
           }
         ],
@@ -164,7 +164,7 @@
         }
       },
       "describe-custom-event-bus-us-east-1": {
-        "Arn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name>",
+        "Arn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name>",
         "Name": "<bus-name>",
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -172,7 +172,7 @@
         }
       },
       "create-custom-event-bus-us-west-1": {
-        "EventBusArn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name>",
+        "EventBusArn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name>",
         "ResponseMetadata": {
           "HTTPHeaders": {},
           "HTTPStatusCode": 200
@@ -181,7 +181,7 @@
       "list-event-buses-after-create-us-west-1": {
         "EventBuses": [
           {
-            "Arn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name>",
+            "Arn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name>",
             "Name": "<bus-name>"
           }
         ],
@@ -191,7 +191,7 @@
         }
       },
       "describe-custom-event-bus-us-west-1": {
-        "Arn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name>",
+        "Arn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name>",
         "Name": "<bus-name>",
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -199,7 +199,7 @@
         }
       },
       "create-custom-event-bus-eu-central-1": {
-        "EventBusArn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name>",
+        "EventBusArn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name>",
         "ResponseMetadata": {
           "HTTPHeaders": {},
           "HTTPStatusCode": 200
@@ -208,7 +208,7 @@
       "list-event-buses-after-create-eu-central-1": {
         "EventBuses": [
           {
-            "Arn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name>",
+            "Arn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name>",
             "Name": "<bus-name>"
           }
         ],
@@ -218,7 +218,7 @@
         }
       },
       "describe-custom-event-bus-eu-central-1": {
-        "Arn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name>",
+        "Arn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name>",
         "Name": "<bus-name>",
         "ResponseMetadata": {
           "HTTPHeaders": {},
@@ -291,7 +291,7 @@
       "list-event-buses-prefix-complete-name": {
         "EventBuses": [
           {
-            "Arn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name>",
+            "Arn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name>",
             "Name": "<bus-name>"
           }
         ],
@@ -303,7 +303,7 @@
       "list-event-buses-prefix": {
         "EventBuses": [
           {
-            "Arn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name>",
+            "Arn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name>",
             "Name": "<bus-name>"
           }
         ],
@@ -320,15 +320,15 @@
       "list-event-buses-limit": {
         "EventBuses": [
           {
-            "Arn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name-prefix>-0",
+            "Arn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name-prefix>-0",
             "Name": "<bus-name-prefix>-0"
           },
           {
-            "Arn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name-prefix>-1",
+            "Arn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name-prefix>-1",
             "Name": "<bus-name-prefix>-1"
           },
           {
-            "Arn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name-prefix>-2",
+            "Arn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name-prefix>-2",
             "Name": "<bus-name-prefix>-2"
           }
         ],
@@ -341,15 +341,15 @@
       "list-event-buses-limit-next-token": {
         "EventBuses": [
           {
-            "Arn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name-prefix>-3",
+            "Arn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name-prefix>-3",
             "Name": "<bus-name-prefix>-3"
           },
           {
-            "Arn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name-prefix>-4",
+            "Arn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name-prefix>-4",
             "Name": "<bus-name-prefix>-4"
           },
           {
-            "Arn": "arn:aws:events:<region>:111111111111:event-bus/<bus-name-prefix>-5",
+            "Arn": "arn:<partition>:events:<region>:111111111111:event-bus/<bus-name-prefix>-5",
             "Name": "<bus-name-prefix>-5"
           }
         ],
@@ -364,21 +364,21 @@
     "recorded-date": "29-04-2024, 13:16:20",
     "recorded-content": {
       "create-custom-event-bus": {
-        "EventBusArn": "arn:aws:events:<region>:111111111111:event-bus/<resource:1>",
+        "EventBusArn": "arn:<partition>:events:<region>:111111111111:event-bus/<resource:1>",
         "ResponseMetadata": {
           "HTTPHeaders": {},
           "HTTPStatusCode": 200
         }
       },
       "create-rule-1": {
-        "RuleArn": "arn:aws:events:<region>:111111111111:rule/<resource:2>",
+        "RuleArn": "arn:<partition>:events:<region>:111111111111:rule/<resource:2>",
         "ResponseMetadata": {
           "HTTPHeaders": {},
           "HTTPStatusCode": 200
         }
       },
       "create-rule-2": {
-        "RuleArn": "arn:aws:events:<region>:111111111111:rule/<resource:1>/<resource:3>",
+        "RuleArn": "arn:<partition>:events:<region>:111111111111:rule/<resource:1>/<resource:3>",
         "ResponseMetadata": {
           "HTTPHeaders": {},
           "HTTPStatusCode": 200
@@ -412,7 +412,7 @@
               "time": "date",
               "region": "<region>",
               "resources": [
-                "arn:aws:s3:::<bucket-name:1>"
+                "arn:<partition>:s3:::<bucket-name:1>"
               ],
               "detail": {
                 "version": "0",
@@ -493,7 +493,7 @@
     "recorded-date": "29-04-2024, 13:16:41",
     "recorded-content": {
       "put-rule": {
-        "RuleArn": "arn:aws:events:<region>:111111111111:rule/<bus-name>/<rule-name>",
+        "RuleArn": "arn:<partition>:events:<region>:111111111111:rule/<bus-name>/<rule-name>",
         "ResponseMetadata": {
           "HTTPHeaders": {},
           "HTTPStatusCode": 200
@@ -502,7 +502,7 @@
       "list-rules": {
         "Rules": [
           {
-            "Arn": "arn:aws:events:<region>:111111111111:rule/<bus-name>/<rule-name>",
+            "Arn": "arn:<partition>:events:<region>:111111111111:rule/<bus-name>/<rule-name>",
             "EventBusName": "<bus-name>",
             "EventPattern": {
               "source": [
@@ -527,7 +527,7 @@
         }
       },
       "describe-rule": {
-        "Arn": "arn:aws:events:<region>:111111111111:rule/<bus-name>/<rule-name>",
+        "Arn": "arn:<partition>:events:<region>:111111111111:rule/<bus-name>/<rule-name>",
         "CreatedBy": "111111111111",
         "EventBusName": "<bus-name>",
         "EventPattern": {
@@ -569,7 +569,7 @@
     "recorded-date": "29-04-2024, 13:16:43",
     "recorded-content": {
       "put-rule": {
-        "RuleArn": "arn:aws:events:<region>:111111111111:rule/<rule-name>",
+        "RuleArn": "arn:<partition>:events:<region>:111111111111:rule/<rule-name>",
         "ResponseMetadata": {
           "HTTPHeaders": {},
           "HTTPStatusCode": 200
@@ -578,7 +578,7 @@
       "list-rules": {
         "Rules": [
           {
-            "Arn": "arn:aws:events:<region>:111111111111:rule/<rule-name>",
+            "Arn": "arn:<partition>:events:<region>:111111111111:rule/<rule-name>",
             "EventBusName": "default",
             "EventPattern": {
               "source": [
@@ -603,7 +603,7 @@
         }
       },
       "describe-rule": {
-        "Arn": "arn:aws:events:<region>:111111111111:rule/<rule-name>",
+        "Arn": "arn:<partition>:events:<region>:111111111111:rule/<rule-name>",
         "CreatedBy": "111111111111",
         "EventBusName": "default",
         "EventPattern": {
@@ -645,14 +645,14 @@
     "recorded-date": "29-04-2024, 13:16:44",
     "recorded-content": {
       "put-rule": {
-        "RuleArn": "arn:aws:events:<region>:111111111111:rule/<bus-name>/<rule-name>",
+        "RuleArn": "arn:<partition>:events:<region>:111111111111:rule/<bus-name>/<rule-name>",
         "ResponseMetadata": {
           "HTTPHeaders": {},
           "HTTPStatusCode": 200
         }
       },
       "re-put-rule": {
-        "RuleArn": "arn:aws:events:<region>:111111111111:rule/<bus-name>/<rule-name>",
+        "RuleArn": "arn:<partition>:events:<region>:111111111111:rule/<bus-name>/<rule-name>",
         "ResponseMetadata": {
           "HTTPHeaders": {},
           "HTTPStatusCode": 200
@@ -661,7 +661,7 @@
       "list-rules": {
         "Rules": [
           {
-            "Arn": "arn:aws:events:<region>:111111111111:rule/<bus-name>/<rule-name>",
+            "Arn": "arn:<partition>:events:<region>:111111111111:rule/<bus-name>/<rule-name>",
             "EventBusName": "<bus-name>",
             "EventPattern": {
               "source": [
@@ -694,7 +694,7 @@
         "NextToken": "<next_token:1>",
         "Rules": [
           {
-            "Arn": "arn:aws:events:<region>:111111111111:rule/<bus-name>/<rule-name-prefix>-0",
+            "Arn": "arn:<partition>:events:<region>:111111111111:rule/<bus-name>/<rule-name-prefix>-0",
             "EventBusName": "<bus-name>",
             "EventPattern": {
               "source": [
@@ -713,7 +713,7 @@
             "State": "ENABLED"
           },
           {
-            "Arn": "arn:aws:events:<region>:111111111111:rule/<bus-name>/<rule-name-prefix>-1",
+            "Arn": "arn:<partition>:events:<region>:111111111111:rule/<bus-name>/<rule-name-prefix>-1",
             "EventBusName": "<bus-name>",
             "EventPattern": {
               "source": [
@@ -732,7 +732,7 @@
             "State": "ENABLED"
           },
           {
-            "Arn": "arn:aws:events:<region>:111111111111:rule/<bus-name>/<rule-name-prefix>-2",
+            "Arn": "arn:<partition>:events:<region>:111111111111:rule/<bus-name>/<rule-name-prefix>-2",
             "EventBusName": "<bus-name>",
             "EventPattern": {
               "source": [
@@ -759,7 +759,7 @@
       "list-rules-limit-next-token": {
         "Rules": [
           {
-            "Arn": "arn:aws:events:<region>:111111111111:rule/<bus-name>/<rule-name-prefix>-3",
+            "Arn": "arn:<partition>:events:<region>:111111111111:rule/<bus-name>/<rule-name-prefix>-3",
             "EventBusName": "<bus-name>",
             "EventPattern": {
               "source": [
@@ -778,7 +778,7 @@
             "State": "ENABLED"
           },
           {
-            "Arn": "arn:aws:events:<region>:111111111111:rule/<bus-name>/<rule-name-prefix>-4",
+            "Arn": "arn:<partition>:events:<region>:111111111111:rule/<bus-name>/<rule-name-prefix>-4",
             "EventBusName": "<bus-name>",
             "EventPattern": {
               "source": [
@@ -797,7 +797,7 @@
             "State": "ENABLED"
           },
           {
-            "Arn": "arn:aws:events:<region>:111111111111:rule/<bus-name>/<rule-name-prefix>-5",
+            "Arn": "arn:<partition>:events:<region>:111111111111:rule/<bus-name>/<rule-name-prefix>-5",
             "EventBusName": "<bus-name>",
             "EventPattern": {
               "source": [
@@ -839,7 +839,7 @@
         }
       },
       "describe-rule-disabled": {
-        "Arn": "arn:aws:events:<region>:111111111111:rule/<bus-name>/<rule-name>",
+        "Arn": "arn:<partition>:events:<region>:111111111111:rule/<bus-name>/<rule-name>",
         "CreatedBy": "111111111111",
         "EventBusName": "<bus-name>",
         "EventPattern": {
@@ -869,7 +869,7 @@
         }
       },
       "describe-rule-enabled": {
-        "Arn": "arn:aws:events:<region>:111111111111:rule/<bus-name>/<rule-name>",
+        "Arn": "arn:<partition>:events:<region>:111111111111:rule/<bus-name>/<rule-name>",
         "CreatedBy": "111111111111",
         "EventBusName": "<bus-name>",
         "EventPattern": {
@@ -904,7 +904,7 @@
         }
       },
       "describe-rule-disabled": {
-        "Arn": "arn:aws:events:<region>:111111111111:rule/<rule-name>",
+        "Arn": "arn:<partition>:events:<region>:111111111111:rule/<rule-name>",
         "CreatedBy": "111111111111",
         "EventBusName": "default",
         "EventPattern": {
@@ -934,7 +934,7 @@
         }
       },
       "describe-rule-enabled": {
-        "Arn": "arn:aws:events:<region>:111111111111:rule/<rule-name>",
+        "Arn": "arn:<partition>:events:<region>:111111111111:rule/<rule-name>",
         "CreatedBy": "111111111111",
         "EventBusName": "default",
         "EventPattern": {
@@ -981,7 +981,7 @@
         }
       },
       "update-rule": {
-        "RuleArn": "arn:aws:events:<region>:111111111111:rule/<rule-name>",
+        "RuleArn": "arn:<partition>:events:<region>:111111111111:rule/<rule-name>",
         "ResponseMetadata": {
           "HTTPHeaders": {},
           "HTTPStatusCode": 200

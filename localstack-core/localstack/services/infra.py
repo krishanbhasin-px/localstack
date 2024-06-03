@@ -258,10 +258,6 @@ def start_infra(asynchronous=False, apis=None):
 
         print_runtime_information(is_in_docker)
 
-        # apply patches
-        patch_urllib3_connection_pool(maxsize=128)
-        patch_instance_tracker_meta()
-
         # set up logging
         setup_logging()
 

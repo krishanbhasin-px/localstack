@@ -13,7 +13,6 @@ from localstack.runtime.exceptions import LocalstackExit
 from localstack.services.plugins import SERVICE_PLUGINS, ServiceDisabled, wait_for_infra_shutdown
 from localstack.utils import files, objects
 from localstack.utils.analytics import usage
-from localstack.utils.aws.request_context import patch_moto_request_handling
 from localstack.utils.bootstrap import (
     get_enabled_apis,
     log_duration,
@@ -308,8 +307,6 @@ def do_start_infra(asynchronous, apis, is_in_docker):
     def prepare_environment():
         # enable the HTTP/HTTPS duplex socket
         enable_duplex_socket()
-
-        patch_moto_request_handling()
 
     @log_duration()
     def preload_services():

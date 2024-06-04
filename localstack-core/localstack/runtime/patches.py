@@ -39,8 +39,7 @@ def apply_runtime_patches():
         return
     _applied = True
 
-    from localstack.services.infra import patch_instance_tracker_meta, patch_urllib3_connection_pool
+    from localstack.services.infra import patch_urllib3_connection_pool
 
     patch_urllib3_connection_pool(maxsize=128)
-    patch_instance_tracker_meta()
     patch_thread_pool()

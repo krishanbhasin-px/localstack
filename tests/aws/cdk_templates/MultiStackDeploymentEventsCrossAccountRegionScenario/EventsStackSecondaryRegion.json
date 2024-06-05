@@ -1,0 +1,355 @@
+{
+  "Resources": {
+    "ConsumerServiceRoleF0394C51": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    "Consumer8D6BE417": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "ZipFile": "import json\nimport boto3\nimport logging\nfrom datetime import datetime, timezone\n\nS3_BUCKET_NAME = \"eventbridge-secondary-s3-bucket\"\n\n# Configure logging\nlogger = logging.getLogger()\nlogger.setLevel(logging.INFO)\n\n# Create S3 client\ns3_client = boto3.client(\"s3\")\n\n\ndef lambda_handler(event, context):\n    logger.info(\"Received event: %s\", json.dumps(event))\n\n    # Generate a unique file name based on the current timestamp\n    file_name = f\"event_{datetime.now(timezone.utc)}.json\"\n\n    # Save the event to the S3 bucket\n    try:\n        s3_client.put_object(\n            Bucket=S3_BUCKET_NAME,\n            Key=file_name,\n            Body=json.dumps(event),\n            ContentType=\"application/json\",\n        )\n        logger.info(\"Event successfully saved to S3 bucket: %s\", S3_BUCKET_NAME)\n    except Exception as e:\n        logger.error(\"Error saving event to S3: %s\", str(e))\n        raise e\n\n    return {\"statusCode\": 200, \"body\": json.dumps(\"Event processed and saved to S3 successfully.\")}\n"
+        },
+        "Handler": "lambda_handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "ConsumerServiceRoleF0394C51",
+            "Arn"
+          ]
+        },
+        "Runtime": "python3.11"
+      },
+      "DependsOn": [
+        "ConsumerServiceRoleF0394C51"
+      ]
+    },
+    "S3BucketConsumerEED1F3F8": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": "eventbridge-secondary-s3-bucket"
+      },
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain"
+    },
+    "LambdaConsumerS3BucketRoleB2E9BB69": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      }
+    },
+    "LambdaConsumerS3BucketRoleDefaultPolicy9DCD4648": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
+                "s3:Abort*"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "S3BucketConsumerEED1F3F8",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "S3BucketConsumerEED1F3F8",
+                          "Arn"
+                        ]
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "LambdaConsumerS3BucketRoleDefaultPolicy9DCD4648",
+        "Roles": [
+          {
+            "Ref": "LambdaConsumerS3BucketRoleB2E9BB69"
+          }
+        ]
+      }
+    },
+    "ProducerSecondaryServiceRoleF1075E04": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    "ProducerSecondaryServiceRoleDefaultPolicyDC7191EC": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "events:PutEvents",
+              "Effect": "Allow",
+              "Resource": "arn:aws:events:*:*:event-bus/*"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "ProducerSecondaryServiceRoleDefaultPolicyDC7191EC",
+        "Roles": [
+          {
+            "Ref": "ProducerSecondaryServiceRoleF1075E04"
+          }
+        ]
+      }
+    },
+    "ProducerSecondary44FE4842": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "ZipFile": "import boto3\nimport logging\nfrom datetime import datetime, timezone\nimport json\n\nEVENT_BUS_NAME_SECONDARY = \"event_bus_secondary\"\nSOURCE_PRODUCER_SECONDARY = \"producer-secondary\"\n\n# Configure logging\nlogger = logging.getLogger()\nlogger.setLevel(logging.INFO)\n\n# Create EventBridge client\nevents_client = boto3.client(\"events\")\n\n\ndef lambda_handler(event, context):\n    entries = [\n        {\n            \"EventBusName\": EVENT_BUS_NAME_SECONDARY,\n            \"Source\": SOURCE_PRODUCER_SECONDARY,\n            \"DetailType\": \"update-account-command\",\n            \"Detail\": json.dumps(event),\n            \"Time\": datetime.now(timezone.utc),\n        }\n    ]\n\n    try:\n        result = events_client.put_events(Entries=entries)\n        logger.info(\"Event sent successfully: %s\", result)\n        return result\n    except Exception as error:\n        logger.error(\"Error sending event: %s\", error)\n        raise error\n"
+        },
+        "Handler": "lambda_handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "ProducerSecondaryServiceRoleF1075E04",
+            "Arn"
+          ]
+        },
+        "Runtime": "python3.11"
+      },
+      "DependsOn": [
+        "ProducerSecondaryServiceRoleDefaultPolicyDC7191EC",
+        "ProducerSecondaryServiceRoleF1075E04"
+      ]
+    },
+    "EventBusSecondary205B3A67": {
+      "Type": "AWS::Events::EventBus",
+      "Properties": {
+        "Name": "event_bus_secondary"
+      }
+    },
+    "RuleLambdaConsumerD3C4C23E": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "EventBusName": {
+          "Ref": "EventBusSecondary205B3A67"
+        },
+        "EventPattern": {
+          "source": [
+            "producer-primary-one"
+          ]
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "Consumer8D6BE417",
+                "Arn"
+              ]
+            },
+            "Id": "Target0"
+          }
+        ]
+      }
+    },
+    "RuleLambdaConsumerAllowEventRuleEventsStackSecondaryRegionConsumer055828F31E1D7BEF": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "Consumer8D6BE417",
+            "Arn"
+          ]
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "RuleLambdaConsumerD3C4C23E",
+            "Arn"
+          ]
+        }
+      }
+    },
+    "SecondaryQueueA94F041D": {
+      "Type": "AWS::SQS::Queue",
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete"
+    },
+    "SecondaryQueuePolicyBB2D8EC6": {
+      "Type": "AWS::SQS::QueuePolicy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sqs:SendMessage",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com"
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "SecondaryQueueA94F041D",
+                  "Arn"
+                ]
+              }
+            },
+            {
+              "Action": [
+                "sqs:SendMessage",
+                "sqs:GetQueueAttributes",
+                "sqs:GetQueueUrl"
+              ],
+              "Condition": {
+                "ArnEquals": {
+                  "aws:SourceArn": {
+                    "Fn::GetAtt": [
+                      "RuleSqs3E705E9E",
+                      "Arn"
+                    ]
+                  }
+                }
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com"
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "SecondaryQueueA94F041D",
+                  "Arn"
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Queues": [
+          {
+            "Ref": "SecondaryQueueA94F041D"
+          }
+        ]
+      }
+    },
+    "RuleSqs3E705E9E": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "EventBusName": {
+          "Ref": "EventBusSecondary205B3A67"
+        },
+        "EventPattern": {
+          "source": [
+            "producer-primary-one",
+            "producer-primary-two",
+            "producer-secondary"
+          ]
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "SecondaryQueueA94F041D",
+                "Arn"
+              ]
+            },
+            "Id": "Target0"
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "LambdaConsumerFunctionName": {
+      "Value": {
+        "Ref": "Consumer8D6BE417"
+      }
+    },
+    "LambdaProducerSecondaryFunctionName": {
+      "Value": {
+        "Ref": "ProducerSecondary44FE4842"
+      }
+    },
+    "SqSQueueSecondaryUrl": {
+      "Value": {
+        "Ref": "SecondaryQueueA94F041D"
+      }
+    }
+  }
+}

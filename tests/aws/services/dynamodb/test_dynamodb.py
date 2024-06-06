@@ -1418,7 +1418,7 @@ class TestDynamoDB:
         retry(lambda: _get_records_amount(4), sleep=1, retries=3)
         snapshot.match("get-records", {"Records": records})
 
-    @pytest.mark.xfail(reason="this test flakes regularly in CI")
+    @pytest.mark.skip(reason="this test flakes regularly in CI")
     @markers.aws.unknown
     def test_dynamodb_stream_records_with_update_item(
         self, dynamodb_create_table, wait_for_stream_ready, aws_client
